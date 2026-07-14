@@ -14,7 +14,7 @@ import Alerts from './pages/presidencia/Alerts'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/arquivo_nacional">
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
