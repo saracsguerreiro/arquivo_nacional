@@ -12,11 +12,13 @@ export default function Header() {
   const isGov = level === 'governo'
   const isPres = level === 'presidencia'
   const isRestricted = isGov || isPres
-  const headerBg = isGov ? '#009A44' : isPres ? '#CE1126' : '#FFFFFF'
+  const headerBg = isGov ? '#009A44' : isPres ? '#111111' : '#FFFFFF'
 
   // Logo stripes per context
-  const stripes = isRestricted
+  const stripes = isGov
     ? ['rgba(255,255,255,0.95)', '#CE1126', '#FCD116']
+    : isPres
+    ? ['#009A44', '#CE1126', '#FCD116']
     : ['#009A44', '#CE1126', '#FCD116']
 
   const activeUnderline = isGov ? '#CE1126' : '#FCD116'
