@@ -30,7 +30,7 @@ export default function SearchPage() {
     <div style={{ minHeight: '100vh', background: '#F5F5F5' }}>
       <Header />
 
-      <div style={{ maxWidth: 860, margin: '0 auto', padding: '28px 20px' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '28px 20px' }}>
 
         {/* Back + search bar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>

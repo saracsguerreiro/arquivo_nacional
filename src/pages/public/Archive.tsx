@@ -30,7 +30,7 @@ export default function Archive() {
     <div style={{ minHeight: '100vh', background: '#F5F5F5' }}>
       <Header />
 
-      <div style={{ maxWidth: 860, margin: '0 auto', padding: '28px 20px' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '28px 20px' }}>
         <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#999999', marginBottom: 24 }}>
           <ArrowLeft size={15} /> Voltar
         </button>

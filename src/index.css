@@ -99,3 +99,15 @@ input, textarea, select { font-family: inherit; outline: none; }
   max-width: 280px;
   word-break: break-word;
 }
+
+.carousel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 2px;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.carousel-card { scroll-snap-align: start; flex-shrink: 0; }
