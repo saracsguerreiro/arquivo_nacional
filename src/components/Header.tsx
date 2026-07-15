@@ -15,11 +15,11 @@ export default function Header() {
   const headerBg = isGov ? '#009A44' : isPres ? '#CE1126' : '#FFFFFF'
 
   // Logo stripes per context
-  const stripes = isGov
+  const stripes = isRestricted
     ? ['rgba(255,255,255,0.95)', '#CE1126', '#FCD116']
-    : isPres
-    ? ['rgba(255,255,255,0.95)', 'rgba(255,255,255,0.95)', 'rgba(255,255,255,0.95)']
     : ['#009A44', '#CE1126', '#FCD116']
+
+  const activeUnderline = isGov ? '#CE1126' : '#FCD116'
 
   const govLinks = [
     { label: 'Feed', path: '/governo' },
@@ -79,7 +79,7 @@ export default function Header() {
                     color: '#FFFFFF',
                     background: 'transparent',
                     border: 'none',
-                    borderBottom: isActive ? '2px solid #CE1126' : '2px solid transparent',
+                    borderBottom: isActive ? `2px solid ${activeUnderline}` : '2px solid transparent',
                     borderRadius: 0,
                     opacity: isActive ? 1 : 0.78,
                     transition: 'all 0.12s',
