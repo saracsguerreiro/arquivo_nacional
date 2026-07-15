@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, ArrowRight, Clock, Globe, Globe2, TrendingUp, Mic, Scale, BarChart2, BookOpen, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Search, ArrowRight, Clock, Globe, Globe2, TrendingUp, Mic, Scale, BarChart2, BookOpen, ChevronRight, ChevronLeft, Archive } from 'lucide-react'
 import Header from '../../components/Header'
 import { articles } from '../../data/mockData'
 
@@ -24,11 +24,19 @@ const TYPE_COLOR: Record<string, string> = {
 // Right column: highlighted topics (legislation + indicators)
 const TOPICS = articles.filter(a => ['Legislação', 'Comunicado oficial', 'Relatório', 'Discurso'].includes(a.type))
 
+const YEARS = [2026, 2025, 2024, 2023]
+const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+const ARCHIVE_DATA: Record<number, number[]> = {
+  2026: [7, 6, 5], 2025: [12, 11, 10], 2024: [6, 3], 2023: [12, 9, 6, 3],
+}
+
 export default function Home() {
   const navigate = useNavigate()
   const [q, setQ] = useState('')
   const [activeCat, setActiveCat] = useState<string | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
+  const [archiveYear, setArchiveYear] = useState(2026)
+  const [archiveMonth, setArchiveMonth] = useState(7)
 
   function scrollCarousel(dir: 'left' | 'right') {
     if (!carouselRef.current) return
@@ -305,8 +313,99 @@ export default function Home() {
         </aside>
       </div>
 
+      {/* ── HEMEROTECA ───────────────────────────────── */}
+      <section style={{ background: '#FFFFFF', borderTop: '1px solid #EEEEEE', padding: '36px 16px' }}>
+        <div style={{ maxWidth: W, margin: '0 auto' }}>
+
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Archive size={18} style={{ color: '#009A44' }} />
+              <div>
+                <h2 style={{ fontSize: 16, fontWeight: 800, color: '#111111', lineHeight: 1.2 }}>Hemeroteca</h2>
+                <p style={{ fontSize: 12, color: '#AAAAAA', marginTop: 2 }}>Navegável por ano e mês, com todo o conteúdo publicado</p>
+              </div>
+            </div>
+            <button onClick={() => navigate('/arquivo')}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600, color: '#009A44' }}>
+              Ver arquivo completo <ChevronRight size={14} />
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+
+            {/* Year + month navigator */}
+            <div style={{ flexShrink: 0 }}>
+              {/* Year tabs */}
+              <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+                {YEARS.map(y => (
+                  <button key={y} onClick={() => { setArchiveYear(y); setArchiveMonth(ARCHIVE_DATA[y][0]) }}
+                    style={{
+                      padding: '6px 14px', borderRadius: 7, fontSize: 13, fontWeight: 700,
+                      background: archiveYear === y ? '#111111' : '#F5F5F5',
+                      color: archiveYear === y ? '#FFFFFF' : '#888888',
+                      border: 'none', transition: 'all 0.12s',
+                    }}>
+                    {y}
+                  </button>
+                ))}
+              </div>
+
+              {/* Month pills */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxWidth: 340 }}>
+                {MONTHS.map((m, i) => {
+                  const mn = i + 1
+                  const has = ARCHIVE_DATA[archiveYear]?.includes(mn)
+                  const sel = archiveMonth === mn
+                  return (
+                    <button key={m} onClick={() => has && setArchiveMonth(mn)}
+                      style={{
+                        padding: '5px 12px', borderRadius: 100, fontSize: 12, fontWeight: sel ? 700 : 400,
+                        background: sel ? '#009A44' : has ? '#F0F0F0' : 'transparent',
+                        color: sel ? '#FFFFFF' : has ? '#555555' : '#DDDDDD',
+                        border: `1px solid ${sel ? '#009A44' : has ? '#E0E0E0' : 'transparent'}`,
+                        cursor: has ? 'pointer' : 'default',
+                        transition: 'all 0.12s',
+                      }}>
+                      {m}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Articles for selected period */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 12, color: '#AAAAAA', marginBottom: 12 }}>
+                {MONTHS[archiveMonth - 1]} {archiveYear} · {articles.length} documentos
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {articles.slice(0, 4).map(a => (
+                  <button key={a.id} onClick={() => navigate(`/noticia/${a.id}`)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: '#F9F9F9', border: '1px solid #EEEEEE', borderRadius: 9, textAlign: 'left', transition: 'all 0.12s' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#F4F4F4'; e.currentTarget.style.borderColor = '#DDDDDD' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#F9F9F9'; e.currentTarget.style.borderColor = '#EEEEEE' }}
+                  >
+                    <span style={{ fontSize: 10, fontWeight: 700, color: TYPE_COLOR[a.type] ?? '#888888', textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0, width: 80 }}>
+                      {a.type}
+                    </span>
+                    <span style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: '#222222', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {a.title}
+                    </span>
+                    <span style={{ fontSize: 11, color: '#CCCCCC', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Clock size={10} /> {a.date}
+                    </span>
+                    <ArrowRight size={13} style={{ color: '#DDDDDD', flexShrink: 0 }} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid #EEEEEE', background: '#FFFFFF', padding: '20px 16px', marginTop: 32 }}>
+      <footer style={{ borderTop: '1px solid #EEEEEE', background: '#FFFFFF', padding: '20px 16px' }}>
         <div style={{ maxWidth: W, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', gap: 8 }}>
             <div style={{ width: 24, height: 3, borderRadius: 2, background: '#009A44' }} />
