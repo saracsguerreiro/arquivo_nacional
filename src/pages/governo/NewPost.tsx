@@ -75,7 +75,7 @@ export default function NewPost() {
           <ArrowLeft size={15} /> Voltar ao feed
         </button>
 
-        <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
 
           {/* ── LEFT: form fields ─────────────────────── */}
           <div style={{ flex: 1, minWidth: 0, background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden' }}>
@@ -158,15 +158,15 @@ export default function NewPost() {
           </div>
 
           {/* ── RIGHT: attachments ────────────────────── */}
-          <div style={{ width: 300, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ width: 300, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 12 , minHeight: 0 }}>
 
             {/* Photos */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <div style={{ padding: '14px 18px', borderBottom: '1px solid #F0F0F0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <ImagePlus size={15} style={{ color: '#009A44' }} />
                 <p style={{ fontSize: 13, fontWeight: 700, color: '#111111' }}>Fotografias</p>
               </div>
-              <div style={{ padding: 14 }}>
+              <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 {photos.length > 0 && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 10 }}>
                     {photos.map(p => (
@@ -195,7 +195,7 @@ export default function NewPost() {
             </div>
 
             {/* Documents */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <div style={{ padding: '14px 18px', borderBottom: '1px solid #F0F0F0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Paperclip size={15} style={{ color: '#0055CC' }} />
                 <p style={{ fontSize: 13, fontWeight: 700, color: '#111111' }}>Documentos</p>
@@ -233,7 +233,7 @@ export default function NewPost() {
             </div>
 
             {/* Links */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 12, overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <div style={{ padding: '14px 18px', borderBottom: '1px solid #F0F0F0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Link size={15} style={{ color: '#7B0080' }} />
                 <p style={{ fontSize: 13, fontWeight: 700, color: '#111111' }}>Links</p>
