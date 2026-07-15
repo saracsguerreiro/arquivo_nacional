@@ -133,15 +133,14 @@ export default function Home() {
                     borderRadius: 14,
                     background: '#FFFFFF',
                     display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-end',
-                    padding: '0 18px 18px',
+                    alignItems: 'center',
                     border: selected ? `1.5px solid ${c.accent}` : '1.5px solid #E8E8E8',
                     opacity: activeCat && !selected ? 0.6 : 1,
                     transition: 'opacity 0.15s, transform 0.15s, box-shadow 0.15s, border-color 0.15s',
                     boxShadow: selected ? `0 0 0 3px ${c.accent}22` : '0 2px 8px rgba(0,0,0,0.06)',
                     overflow: 'hidden',
                     position: 'relative',
+                    textAlign: 'left',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = selected ? `0 6px 20px ${c.accent}33` : '0 6px 18px rgba(0,0,0,0.10)' }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = selected ? `0 0 0 3px ${c.accent}22` : '0 2px 8px rgba(0,0,0,0.06)' }}
@@ -149,13 +148,33 @@ export default function Home() {
                   {/* Top colour bar */}
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: c.accent }} />
 
-                  {/* Icon + label in one row */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Icon size={22} color={c.accent} strokeWidth={2} />
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#1A1A1A', lineHeight: 1.3, letterSpacing: '-0.1px' }}>
-                      {c.label}
-                    </span>
+                  {/* Large icon on left — partially cropped */}
+                  <div style={{
+                    position: 'absolute',
+                    left: -18,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: c.accent,
+                    opacity: 0.18,
+                    pointerEvents: 'none',
+                    lineHeight: 0,
+                  }}>
+                    <Icon size={130} strokeWidth={1.2} />
                   </div>
+
+                  {/* Label on the right */}
+                  <span style={{
+                    marginLeft: 88,
+                    paddingRight: 16,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: '#1A1A1A',
+                    lineHeight: 1.35,
+                    letterSpacing: '-0.1px',
+                    position: 'relative',
+                  }}>
+                    {c.label}
+                  </span>
                 </button>
               )
             })}
