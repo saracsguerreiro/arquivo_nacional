@@ -1,4 +1,18 @@
-export const articles = [
+export interface Article {
+  id: number
+  title: string
+  category: string
+  date: string
+  source: string
+  type: string
+  excerpt: string
+  body: string
+  tags: string[]
+  image?: string
+  imageCaption?: string
+}
+
+export const articles: Article[] = [
   {
     id: 1,
     title: "Presidente da República reúne com Conselho de Ministros para discussão do OGE 2027",
@@ -50,11 +64,17 @@ A decisão visa assegurar a estabilidade de preços no médio prazo, num context
     source: "Presidência da República de Moçambique",
     type: "Discurso",
     excerpt: "O Chefe de Estado abriu a sessão parlamentar com um discurso centrado na coesão nacional e no desenvolvimento sustentável.",
+    image: "/arquivo_nacional/images/artigo-destaque.webp",
+    imageCaption: "O Presidente da República durante a cerimónia de abertura da sessão parlamentar de Julho de 2026.",
     body: `Excelências, membros da Assembleia da República,
 
 É com profunda honra que abro esta sessão parlamentar de julho de 2026, num momento crucial para o futuro de Moçambique. O nosso país atravessa um período de afirmação da sua soberania, da sua unidade e do seu papel no concerto das nações africanas.
 
-Os desafios que enfrentamos — económicos, sociais e climáticos — exigem de nós, representantes do povo, uma resposta à altura da responsabilidade que nos foi confiada pelos moçambicanos...`,
+Os desafios que enfrentamos — económicos, sociais e climáticos — exigem de nós, representantes do povo, uma resposta à altura da responsabilidade que nos foi confiada pelos moçambicanos.
+
+A unidade nacional é o nosso maior bem. Foi ela que nos guiou ao longo de mais de quatro décadas de independência, e é ela que continuará a ser o alicerce do nosso progresso coletivo.
+
+Reafirmo o compromisso do Governo com a paz, a justiça social e o desenvolvimento inclusivo de todas as províncias e distritos do nosso país.`,
     tags: ["Parlamento", "Discurso", "Sessão Plenária"],
   },
   {

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Download, Share2, BookOpen, Clock, Tag } from 'lucide-react'
 import Header from '../../components/Header'
-import { articles } from '../../data/mockData'
+import { articles, type Article } from '../../data/mockData'
 
 const TYPE_COLOR: Record<string, string> = {
   'Notícia': '#009A44', 'Comunicado oficial': '#555555',
@@ -11,7 +11,7 @@ const TYPE_COLOR: Record<string, string> = {
 export default function Article() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const article = articles.find(a => a.id === Number(id)) ?? articles[0]
+  const article: Article = articles.find(a => a.id === Number(id)) ?? articles[0]
   const related = articles.filter(a => a.id !== article.id && a.category === article.category).slice(0, 3)
   const typeColor = TYPE_COLOR[article.type] ?? '#555555'
 
@@ -73,11 +73,32 @@ export default function Article() {
               ))}
             </div>
 
-            {/* Body */}
-            <div style={{ fontSize: 15, color: '#444444', lineHeight: 1.8 }}>
-              {article.body.split('\n\n').map((p, i) => (
-                <p key={i} style={{ marginBottom: 16 }}>{p}</p>
-              ))}
+            {/* Body + optional photo */}
+            <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
+              {/* Text */}
+              <div style={{ flex: 1, minWidth: 0, fontSize: 15, color: '#444444', lineHeight: 1.8 }}>
+                {article.body.split('\n\n').map((p, i) => (
+                  <p key={i} style={{ marginBottom: 16 }}>{p}</p>
+                ))}
+              </div>
+
+              {/* Photo */}
+              {article.image && (
+                <div style={{ width: 300, flexShrink: 0 }}>
+                  <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #EEEEEE' }}>
+                    <img
+                      src={article.image}
+                      alt={article.imageCaption ?? article.title}
+                      style={{ width: '100%', display: 'block', objectFit: 'cover', aspectRatio: '4/5' }}
+                    />
+                  </div>
+                  {article.imageCaption && (
+                    <p style={{ fontSize: 12, color: '#AAAAAA', lineHeight: 1.5, marginTop: 8, fontStyle: 'italic' }}>
+                      {article.imageCaption}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
