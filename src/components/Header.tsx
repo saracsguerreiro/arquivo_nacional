@@ -73,7 +73,7 @@ export default function Header() {
                   key={link.path}
                   onClick={() => navigate(link.path)}
                   style={{
-                    padding: '6px 14px',
+                    padding: '4px 14px 3px',
                     fontSize: 13,
                     fontWeight: isActive ? 700 : 500,
                     color: '#FFFFFF',
@@ -83,8 +83,6 @@ export default function Header() {
                     borderRadius: 0,
                     opacity: isActive ? 1 : 0.78,
                     transition: 'all 0.12s',
-                    height: 56,
-                    display: 'flex', alignItems: 'center',
                   }}
                   onMouseEnter={e => { if (!isActive) e.currentTarget.style.opacity = '1' }}
                   onMouseLeave={e => { if (!isActive) e.currentTarget.style.opacity = '0.78' }}
