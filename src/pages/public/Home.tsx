@@ -1,19 +1,19 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, ArrowRight, Clock, Globe, Globe2, TrendingUp, Mic, Scale, BarChart2, BookOpen, ChevronRight } from 'lucide-react'
+import { Search, ArrowRight, Clock, Globe, Globe2, TrendingUp, Mic, Scale, BarChart2, BookOpen, ChevronRight, ChevronLeft } from 'lucide-react'
 import Header from '../../components/Header'
 import { articles } from '../../data/mockData'
 
 const W = '1240px'
 
 const CATS = [
-  { label: 'Política Nacional',        icon: <Globe size={22} />,     bg: '#009A44', fg: '#FFFFFF', cat: 'Política nacional' },
-  { label: 'Política Internacional',   icon: <Globe2 size={22} />,    bg: '#007A35', fg: '#FFFFFF', cat: 'Política internacional' },
-  { label: 'Economia',                 icon: <TrendingUp size={22} />, bg: '#FCD116', fg: '#1A1A1A', cat: 'Economia' },
-  { label: 'Discursos',                icon: <Mic size={22} />,        bg: '#CE1126', fg: '#FFFFFF', cat: 'Discursos presidenciais' },
-  { label: 'Legislação',               icon: <Scale size={22} />,      bg: '#111111', fg: '#FFFFFF', cat: 'Legislação' },
-  { label: 'Indicadores',              icon: <BarChart2 size={22} />,  bg: '#F59E0B', fg: '#1A1A1A', cat: 'Indicadores económicos' },
-  { label: 'Arquivo Histórico',        icon: <BookOpen size={22} />,   bg: '#009A44', fg: '#FFFFFF', route: '/arquivo' },
+  { label: 'Política Nacional',        icon: Globe,      accent: '#009A44', cat: 'Política nacional' },
+  { label: 'Política Internacional',   icon: Globe2,     accent: '#CE1126', cat: 'Política internacional' },
+  { label: 'Economia',                 icon: TrendingUp, accent: '#D4A800', cat: 'Economia' },
+  { label: 'Discursos',                icon: Mic,        accent: '#009A44', cat: 'Discursos presidenciais' },
+  { label: 'Legislação',               icon: Scale,      accent: '#CE1126', cat: 'Legislação' },
+  { label: 'Indicadores',              icon: BarChart2,  accent: '#D4A800', cat: 'Indicadores económicos' },
+  { label: 'Arquivo Histórico',        icon: BookOpen,   accent: '#009A44', route: '/arquivo' },
 ]
 
 const TYPE_COLOR: Record<string, string> = {
@@ -28,6 +28,13 @@ export default function Home() {
   const navigate = useNavigate()
   const [q, setQ] = useState('')
   const [activeCat, setActiveCat] = useState<string | null>(null)
+  const carouselRef = useRef<HTMLDivElement>(null)
+
+  function scrollCarousel(dir: 'left' | 'right') {
+    if (!carouselRef.current) return
+    const amount = carouselRef.current.clientWidth * 0.75
+    carouselRef.current.scrollBy({ left: dir === 'right' ? amount : -amount, behavior: 'smooth' })
+  }
 
   const news = articles.filter(a =>
     (!activeCat || a.category === activeCat) &&
@@ -86,40 +93,87 @@ export default function Home() {
         </div>
 
         {/* ── CATEGORY CAROUSEL ────────────────────────── */}
-        <div style={{ maxWidth: W, margin: '28px auto 0', padding: '0 16px' }}>
-          <div className="carousel">
-            {CATS.map(c => (
-              <button
-                key={c.label}
-                className="carousel-card"
-                onClick={() => {
-                  if (c.route) { navigate(c.route); return }
-                  setActiveCat(activeCat === c.cat ? null : (c.cat ?? null))
-                }}
-                style={{
-                  width: 130,
-                  height: 90,
-                  borderRadius: 14,
-                  background: c.bg,
-                  color: c.fg,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  justifyContent: 'space-between',
-                  padding: '14px 14px 12px',
-                  border: activeCat === c.cat ? `2px solid ${c.fg}` : '2px solid transparent',
-                  opacity: activeCat && activeCat !== c.cat ? 0.7 : 1,
-                  transition: 'opacity 0.15s, transform 0.15s',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
-              >
-                <span style={{ opacity: 0.85 }}>{c.icon}</span>
-                <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.3 }}>{c.label}</span>
-              </button>
-            ))}
+        <div style={{ maxWidth: W, margin: '28px auto 0', padding: '0 16px', position: 'relative' }}>
+
+          {/* Arrow left */}
+          <button
+            onClick={() => scrollCarousel('left')}
+            style={{
+              position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+              zIndex: 2, width: 36, height: 36, borderRadius: '50%',
+              background: '#FFFFFF', border: '1.5px solid #E5E5E5',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.10)', color: '#555555',
+            }}
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          {/* Scrollable track */}
+          <div
+            ref={carouselRef}
+            className="carousel"
+            style={{ padding: '4px 44px 8px' }}
+          >
+            {CATS.map(c => {
+              const Icon = c.icon
+              const selected = activeCat === c.cat
+              return (
+                <button
+                  key={c.label}
+                  className="carousel-card"
+                  onClick={() => {
+                    if (c.route) { navigate(c.route); return }
+                    setActiveCat(selected ? null : (c.cat ?? null))
+                  }}
+                  style={{
+                    width: 'calc((100% - 3 * 12px) / 4)',
+                    minWidth: 180,
+                    height: 150,
+                    borderRadius: 14,
+                    background: '#FFFFFF',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    padding: '0 18px 18px',
+                    border: selected ? `1.5px solid ${c.accent}` : '1.5px solid #E8E8E8',
+                    opacity: activeCat && !selected ? 0.6 : 1,
+                    transition: 'opacity 0.15s, transform 0.15s, box-shadow 0.15s, border-color 0.15s',
+                    boxShadow: selected ? `0 0 0 3px ${c.accent}22` : '0 2px 8px rgba(0,0,0,0.06)',
+                    overflow: 'hidden',
+                    position: 'relative',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = selected ? `0 6px 20px ${c.accent}33` : '0 6px 18px rgba(0,0,0,0.10)' }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = selected ? `0 0 0 3px ${c.accent}22` : '0 2px 8px rgba(0,0,0,0.06)' }}
+                >
+                  {/* Top colour bar */}
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: c.accent }} />
+
+                  {/* Icon + label in one row */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Icon size={22} color={c.accent} strokeWidth={2} />
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#1A1A1A', lineHeight: 1.3, letterSpacing: '-0.1px' }}>
+                      {c.label}
+                    </span>
+                  </div>
+                </button>
+              )
+            })}
           </div>
+
+          {/* Arrow right */}
+          <button
+            onClick={() => scrollCarousel('right')}
+            style={{
+              position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)',
+              zIndex: 2, width: 36, height: 36, borderRadius: '50%',
+              background: '#FFFFFF', border: '1.5px solid #E5E5E5',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.10)', color: '#555555',
+            }}
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
       </section>
 
