@@ -93,14 +93,14 @@ export default function Feed() {
                       <div style={{
                         display: 'grid',
                         gridTemplateColumns: post.images!.length === 1 ? '1fr' : '1fr 1fr',
-                        gap: 6,
+                        gap: 4,
                         marginBottom: 16,
                         borderRadius: 8,
                         overflow: 'hidden',
                       }}>
                         {post.images!.map((src, i) => (
                           <img key={i} src={src} alt=""
-                            style={{ width: '100%', aspectRatio: post.images!.length === 1 ? '16/7' : '1/1', objectFit: 'cover', display: 'block' }} />
+                            style={{ width: '100%', height: 140, objectFit: 'cover', display: 'block' }} />
                         ))}
                       </div>
                     )}

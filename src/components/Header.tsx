@@ -14,12 +14,19 @@ export default function Header() {
   const isRestricted = isGov || isPres
   const headerBg = isGov ? '#009A44' : isPres ? '#CE1126' : '#FFFFFF'
 
-  const govLinks: { label: string; path: string; accent?: boolean }[] = [
+  // Logo stripes per context
+  const stripes = isGov
+    ? ['rgba(255,255,255,0.95)', '#CE1126', '#FCD116']
+    : isPres
+    ? ['rgba(255,255,255,0.95)', 'rgba(255,255,255,0.95)', 'rgba(255,255,255,0.95)']
+    : ['#009A44', '#CE1126', '#FCD116']
+
+  const govLinks = [
     { label: 'Feed', path: '/governo' },
     { label: 'Grupos', path: '/governo/grupos' },
-    { label: '+ Nova publicação', path: '/governo/nova-publicacao', accent: true },
+    { label: '+ Nova publicação', path: '/governo/nova-publicacao' },
   ]
-  const presLinks: { label: string; path: string }[] = [
+  const presLinks = [
     { label: 'Resumo', path: '/presidencia' },
     { label: 'Chat', path: '/presidencia/chat' },
     { label: 'Alertas', path: '/presidencia/alertas' },
@@ -33,16 +40,15 @@ export default function Header() {
       position: 'sticky', top: 0, zIndex: 40,
       boxShadow: isRestricted ? '0 2px 12px rgba(0,0,0,0.15)' : 'none',
     }}>
-      <div style={{ maxWidth: W, margin: '0 auto', padding: '0 16px', display: 'flex', alignItems: 'center', height: 56, gap: 12 }}>
+      <div style={{ maxWidth: W, margin: '0 auto', padding: '0 16px', display: 'flex', alignItems: 'center', height: 56, position: 'relative' }}>
 
-        {/* Logo */}
+        {/* Logo — left */}
         <button onClick={() => navigate(isRestricted ? `/${level}` : '/')}
           style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2.5, width: 14 }}>
-            {/* On coloured header all stripes go white; on public each keeps its flag colour */}
-            <div style={{ height: 3.5, borderRadius: 2, background: isRestricted ? 'rgba(255,255,255,0.9)' : '#009A44' }} />
-            <div style={{ height: 3.5, borderRadius: 2, background: isRestricted ? 'rgba(255,255,255,0.9)' : '#CE1126' }} />
-            <div style={{ height: 3.5, borderRadius: 2, background: isRestricted ? 'rgba(255,255,255,0.9)' : '#FCD116' }} />
+            <div style={{ height: 3.5, borderRadius: 2, background: stripes[0] }} />
+            <div style={{ height: 3.5, borderRadius: 2, background: stripes[1] }} />
+            <div style={{ height: 3.5, borderRadius: 2, background: stripes[2] }} />
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: isRestricted ? '#FFFFFF' : '#111111', lineHeight: 1.2 }}>
@@ -54,28 +60,43 @@ export default function Header() {
           </div>
         </button>
 
-        {/* Nav links */}
+        {/* Nav — centred absolutely */}
         {isRestricted && (
-          <nav style={{ display: 'flex', gap: 2, alignItems: 'center', marginLeft: 16 }}>
+          <nav style={{
+            position: 'absolute', left: '50%', transform: 'translateX(-50%)',
+            display: 'flex', gap: 4, alignItems: 'center',
+          }}>
             {navLinks.map(link => {
               const isActive = location.pathname === link.path
               return (
-                <button key={link.path} onClick={() => navigate(link.path)} style={{
-                  padding: '6px 13px', borderRadius: 7, fontSize: 13, fontWeight: isActive ? 700 : 500,
-                  color: '#FFFFFF',
-                  background: isActive ? 'rgba(255,255,255,0.22)' : 'transparent',
-                  border: '1.5px solid transparent',
-                  transition: 'all 0.12s',
-                  opacity: isActive ? 1 : 0.8,
-                }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.12)' }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
-                >{link.label}</button>
+                <button
+                  key={link.path}
+                  onClick={() => navigate(link.path)}
+                  style={{
+                    padding: '6px 14px',
+                    fontSize: 13,
+                    fontWeight: isActive ? 700 : 500,
+                    color: '#FFFFFF',
+                    background: 'transparent',
+                    border: 'none',
+                    borderBottom: isActive ? '2px solid #CE1126' : '2px solid transparent',
+                    borderRadius: 0,
+                    opacity: isActive ? 1 : 0.78,
+                    transition: 'all 0.12s',
+                    height: 56,
+                    display: 'flex', alignItems: 'center',
+                  }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.opacity = '1' }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.opacity = '0.78' }}
+                >
+                  {link.label}
+                </button>
               )
             })}
           </nav>
         )}
 
+        {/* Actions — right */}
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
           {!isRestricted ? (
             <button onClick={() => setLoginOpen(true)}
@@ -95,6 +116,7 @@ export default function Header() {
             </>
           )}
         </div>
+
       </div>
     </header>
   )
