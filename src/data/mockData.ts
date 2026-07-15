@@ -21,6 +21,8 @@ export const articles: Article[] = [
     source: "AIM — Agência de Informação de Moçambique",
     type: "Notícia",
     excerpt: "O Presidente da República presidiu hoje à reunião ordinária do Conselho de Ministros, onde foram analisadas as projeções macroeconómicas para o Orçamento Geral do Estado de 2027.",
+    image: "/arquivo_nacional/images/artigo-destaque.webp",
+    imageCaption: "O Presidente da República na saída do Conselho de Ministros, em Maputo.",
     body: `O Presidente da República, Filipe Nyusi, presidiu esta terça-feira à reunião ordinária do Conselho de Ministros, centrada na análise das projeções macroeconómicas e nas prioridades setoriais para o Orçamento Geral do Estado (OGE) de 2027.
 
 De acordo com nota do Gabinete da Presidência da República, a reunião contou com a participação de todos os membros do Governo e teve como foco principal os investimentos nas áreas de educação, saúde e infraestruturas.
