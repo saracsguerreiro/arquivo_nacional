@@ -1,135 +1,102 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Users, MessageSquare, ChevronRight, TrendingUp } from 'lucide-react'
-import GovHeader from '../../components/GovHeader'
+import { Users, MessageSquare, ArrowRight } from 'lucide-react'
+import Header from '../../components/Header'
 import { govGroups, govPosts } from '../../data/mockData'
 
-const groupColors: Record<string, string> = {
-  'Economia e Finanças': '#009A44',
-  'Saúde Pública': '#CE1126',
-  'Educação': '#0066CC',
-  'Infraestruturas': '#7B5E00',
-  'Diplomacia e Relações Exteriores': '#4B0082',
-  'Segurança e Defesa': '#1A1A1A',
-  'Agricultura': '#6B7700',
-  'Ambiente e Clima': '#005577',
+const MIN_COLORS: Record<string, string> = {
+  'Economia e Finanças': '#009A44', 'Saúde Pública': '#CE1126', 'Educação': '#0055CC',
+  'Infraestruturas': '#8B6914', 'Diplomacia e Relações Exteriores': '#6B21A8',
+  'Segurança e Defesa': '#374151', 'Agricultura': '#4D7C0F', 'Ambiente e Clima': '#0E7490',
 }
 
 export default function Groups() {
-  const navigate = useNavigate()
   const [selected, setSelected] = useState<typeof govGroups[0] | null>(null)
+  const color = selected ? (MIN_COLORS[selected.name] ?? '#333333') : '#333333'
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <GovHeader user={{ name: 'Min. Obras Públicas', role: 'Ministério de Obras Públicas' }} level="governo" />
+    <div style={{ minHeight: '100vh', background: '#111111' }}>
+      <Header />
 
-      <main className="max-w-5xl mx-auto px-4 py-6">
-        <h1 className="text-lg font-bold text-gray-900 mb-1">Grupos Temáticos</h1>
-        <p className="text-sm text-gray-500 mb-5">Canais organizados por pasta ministerial ou assunto.</p>
+      <div style={{ maxWidth: 860, margin: '0 auto', padding: '28px 20px' }}>
+        <h1 style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>Grupos Temáticos</h1>
+        <p style={{ fontSize: 13, color: '#666666', marginBottom: 24 }}>Canais por pasta ministerial ou assunto</p>
 
-        <div className="flex gap-5 flex-col md:flex-row">
-          {/* Lista de grupos */}
-          <div className="md:w-72 flex-shrink-0 space-y-2">
-            {govGroups.map((group) => {
-              const color = groupColors[group.name] ?? '#6B7280'
-              const isSelected = selected?.id === group.id
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+
+          {/* Group list */}
+          <div style={{ width: 240, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {govGroups.map(g => {
+              const c = MIN_COLORS[g.name] ?? '#444444'
+              const isSelected = selected?.id === g.id
               return (
-                <button
-                  key={group.id}
-                  onClick={() => setSelected(group)}
-                  className="w-full rounded-xl p-4 text-left transition-all shadow-sm"
+                <button key={g.id} onClick={() => setSelected(g)}
                   style={{
-                    background: isSelected ? color : 'white',
-                    color: isSelected ? 'white' : '#1A1A1A',
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-                        style={{ background: isSelected ? 'rgba(255,255,255,0.2)' : color + '18' }}>
-                        <span style={{ color: isSelected ? 'white' : color, fontSize: 14, fontWeight: 900 }}>
-                          {group.name[0]}
-                        </span>
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold leading-tight">{group.name}</div>
-                        <div className="text-xs opacity-60 mt-0.5">{group.members} membros · {group.posts} publicações</div>
-                      </div>
-                    </div>
-                    {group.active && (
-                      <div className="w-2 h-2 rounded-full" style={{ background: isSelected ? 'rgba(255,255,255,0.8)' : '#009A44' }} />
-                    )}
+                    display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10,
+                    background: isSelected ? c : '#1A1A1A',
+                    border: `1px solid ${isSelected ? c : '#2A2A2A'}`,
+                    textAlign: 'left', transition: 'all 0.15s',
+                  }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: isSelected ? 'rgba(255,255,255,0.2)' : c + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <span style={{ fontSize: 13, fontWeight: 900, color: isSelected ? '#FFFFFF' : c }}>{g.name[0]}</span>
                   </div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: isSelected ? '#FFFFFF' : '#CCCCCC', lineHeight: 1.3 }}>{g.name}</p>
+                    <p style={{ fontSize: 11, color: isSelected ? 'rgba(255,255,255,0.6)' : '#555555', marginTop: 2 }}>{g.posts} publicações</p>
+                  </div>
+                  {g.active && <div style={{ width: 6, height: 6, borderRadius: '50%', background: isSelected ? 'rgba(255,255,255,0.8)' : '#009A44', marginLeft: 'auto', flexShrink: 0 }} />}
                 </button>
               )
             })}
           </div>
 
-          {/* Conteúdo do grupo */}
-          <div className="flex-1">
+          {/* Group content */}
+          <div style={{ flex: 1, minWidth: 0 }}>
             {!selected ? (
-              <div className="bg-white rounded-2xl shadow-sm p-10 text-center text-gray-400">
-                <Users size={40} className="mx-auto mb-3 opacity-20" />
-                <p className="font-semibold">Selecione um grupo</p>
-                <p className="text-sm mt-1">Escolha um grupo da lista para ver as publicações</p>
+              <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 10, padding: '48px 24px', textAlign: 'center' }}>
+                <Users size={36} style={{ color: '#333333', margin: '0 auto 12px' }} />
+                <p style={{ fontSize: 14, color: '#555555' }}>Selecione um grupo para ver as publicações</p>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div className="p-5 text-white" style={{ background: groupColors[selected.name] ?? '#1A1A1A' }}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="font-bold text-base">{selected.name}</h2>
-                      <div className="text-xs opacity-70 mt-1 flex items-center gap-3">
-                        <span className="flex items-center gap-1"><Users size={12} /> {selected.members} membros</span>
-                        <span className="flex items-center gap-1"><MessageSquare size={12} /> {selected.posts} publicações</span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => navigate('/governo/nova-publicacao')}
-                      className="text-xs font-bold px-3 py-1.5 rounded-full hover:opacity-80 transition-opacity"
-                      style={{ background: 'rgba(255,255,255,0.2)' }}
-                    >
-                      + Publicar
-                    </button>
+              <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 10, overflow: 'hidden' }}>
+                {/* Group header */}
+                <div style={{ padding: '16px 20px', borderBottom: '1px solid #222222', background: color + '18', borderTop: `3px solid ${color}` }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 6 }}>{selected.name}</h2>
+                  <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#666666' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Users size={12} /> {selected.members} membros</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><MessageSquare size={12} /> {selected.posts} publicações</span>
                   </div>
                 </div>
 
-                <div className="divide-y divide-gray-50">
-                  {govPosts.slice(0, 2).map((post) => (
-                    <div key={post.id} className="p-5">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                          style={{ background: groupColors[selected.name] ?? '#1A1A1A' }}>
-                          {post.author[0]}
-                        </div>
-                        <div>
-                          <span className="text-sm font-bold text-gray-900">{post.author}</span>
-                          <span className="text-xs text-gray-400 ml-2">{post.time}</span>
-                        </div>
+                {/* Posts preview */}
+                {govPosts.slice(0, 2).map((post, i) => (
+                  <div key={post.id} style={{ padding: '16px 20px', borderBottom: i === 0 ? '1px solid #222222' : 'none' }}>
+                    <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+                      <div style={{ width: 28, height: 28, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                        {post.author[0]}
                       </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{post.content}</p>
-                      <div className="flex items-center gap-3 mt-3 text-xs text-gray-400">
-                        <span className="flex items-center gap-1"><TrendingUp size={11} /> {post.likes} gostos</span>
-                        <span className="flex items-center gap-1"><MessageSquare size={11} /> {post.comments} comentários</span>
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: '#CCCCCC' }}>{post.author}</p>
+                        <p style={{ fontSize: 11, color: '#555555' }}>{post.time}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <p style={{ fontSize: 13, color: '#AAAAAA', lineHeight: 1.65 }}>{post.content}</p>
+                    <div style={{ display: 'flex', gap: 14, marginTop: 12, fontSize: 12, color: '#555555' }}>
+                      <span>{post.likes} gostos</span>
+                      <span>{post.comments} comentários</span>
+                    </div>
+                  </div>
+                ))}
 
-                <div className="p-4 text-center border-t border-gray-100">
-                  <button
-                    onClick={() => navigate('/governo')}
-                    className="text-sm font-semibold flex items-center gap-1 mx-auto hover:underline"
-                    style={{ color: groupColors[selected.name] ?? '#009A44' }}
-                  >
-                    Ver todas as publicações do grupo <ChevronRight size={14} />
+                <div style={{ padding: '12px 20px', borderTop: '1px solid #222222', textAlign: 'center' }}>
+                  <button style={{ fontSize: 13, fontWeight: 600, color: color, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    Ver todas as publicações <ArrowRight size={13} />
                   </button>
                 </div>
               </div>
             )}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

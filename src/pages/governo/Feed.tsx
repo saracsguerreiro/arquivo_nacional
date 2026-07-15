@@ -1,119 +1,101 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ThumbsUp, MessageSquare, AlertTriangle, AlertCircle, Info, Plus, Search } from 'lucide-react'
-import GovHeader from '../../components/GovHeader'
+import { ThumbsUp, MessageSquare, AlertTriangle, AlertCircle, Plus, Search } from 'lucide-react'
+import Header from '../../components/Header'
 import { govPosts } from '../../data/mockData'
 
-const priorityConfig = {
-  urgente: { label: 'URGENTE', color: '#CE1126', icon: <AlertTriangle size={12} /> },
-  prioritária: { label: 'PRIORITÁRIA', color: '#F59E0B', icon: <AlertCircle size={12} /> },
-  normal: { label: '', color: '', icon: null },
-}
-
-const ministryColors: Record<string, string> = {
-  Economia: '#009A44',
-  Saúde: '#CE1126',
-  Educação: '#0066CC',
-  Infraestruturas: '#7B5E00',
-  Diplomacia: '#4B0082',
-  Segurança: '#1A1A1A',
+const MIN_COLORS: Record<string, string> = {
+  Economia: '#009A44', Saúde: '#CE1126', Educação: '#0055CC',
+  Infraestruturas: '#8B6914', Diplomacia: '#6B21A8', Segurança: '#374151',
 }
 
 export default function Feed() {
   const navigate = useNavigate()
   const [posts, setPosts] = useState(govPosts)
-  const [search, setSearch] = useState('')
+  const [q, setQ] = useState('')
 
-  const filtered = posts.filter((p) =>
-    !search || p.content.toLowerCase().includes(search.toLowerCase()) || p.author.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = posts.filter(p => !q || p.content.toLowerCase().includes(q.toLowerCase()) || p.author.toLowerCase().includes(q.toLowerCase()))
 
   function toggleLike(id: number) {
-    setPosts(posts.map((p) => p.id === id
-      ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 }
-      : p
-    ))
+    setPosts(posts.map(p => p.id === id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes-1 : p.likes+1 } : p))
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <GovHeader user={{ name: 'Min. Obras Públicas', role: 'Ministério de Obras Públicas' }} level="governo" />
+    <div style={{ minHeight: '100vh', background: '#111111' }}>
+      <Header />
 
-      <main className="max-w-3xl mx-auto px-4 py-6">
-        {/* Barra de ações */}
-        <div className="flex items-center gap-3 mb-5">
-          <div className="relative flex-1">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '28px 20px' }}>
+
+        {/* Top bar */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
+          <div style={{ flex: 1, position: 'relative' }}>
+            <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#555555', pointerEvents: 'none' }} />
             <input
               type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={q}
+              onChange={e => setQ(e.target.value)}
               placeholder="Pesquisar no feed..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2"
+              style={{ width: '100%', padding: '10px 12px 10px 36px', fontSize: 13, border: '1px solid #2A2A2A', borderRadius: 8, background: '#1A1A1A', color: '#DDDDDD', outline: 'none' }}
             />
           </div>
-          <button
-            onClick={() => navigate('/governo/nova-publicacao')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold shadow-sm hover:opacity-90 transition-opacity"
-            style={{ background: '#009A44' }}
-          >
-            <Plus size={16} /> Publicar
+          <button onClick={() => navigate('/governo/nova-publicacao')}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 8, background: '#009A44', color: '#FFFFFF', fontSize: 13, fontWeight: 600, flexShrink: 0 }}>
+            <Plus size={15} /> Publicar
           </button>
         </div>
 
         {/* Posts */}
-        <div className="space-y-4">
-          {filtered.map((post) => {
-            const pConfig = priorityConfig[post.priority as keyof typeof priorityConfig]
-            return (
-              <div key={post.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                {pConfig?.color && (
-                  <div className="px-5 py-2 flex items-center gap-2 text-xs font-bold text-white"
-                    style={{ background: pConfig.color }}>
-                    {pConfig.icon} {pConfig.label}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {filtered.map(post => (
+            <div key={post.id} className="post-card" style={{ background: '#1A1A1A', border: '1px solid #2A2A2A' }}>
+              {/* Priority banner */}
+              {post.priority !== 'normal' && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '7px 16px', fontSize: 11, fontWeight: 700,
+                  background: post.priority === 'urgente' ? '#CE1126' : '#92400E',
+                  color: '#FFFFFF', letterSpacing: '0.05em', textTransform: 'uppercase',
+                }}>
+                  {post.priority === 'urgente' ? <AlertTriangle size={12} /> : <AlertCircle size={12} />}
+                  {post.priority}
+                </div>
+              )}
+
+              <div style={{ padding: '18px 20px' }}>
+                {/* Author */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                  <div style={{ width: 38, height: 38, borderRadius: '50%', background: MIN_COLORS[post.ministry] ?? '#333333', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                    {post.author[0]}
                   </div>
-                )}
-
-                <div className="p-5">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                      style={{ background: ministryColors[post.ministry] ?? '#1A1A1A' }}>
-                      {post.author.split(' ')[1]?.[0] ?? post.author[0]}
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 2 }}>{post.author}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: MIN_COLORS[post.ministry] ?? '#888888', background: (MIN_COLORS[post.ministry] ?? '#333333') + '22', padding: '2px 8px', borderRadius: 100 }}>
+                        {post.ministry}
+                      </span>
+                      <span style={{ fontSize: 12, color: '#555555' }}>{post.time}</span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-bold text-gray-900">{post.author}</span>
-                        <span className="text-xs px-2 py-0.5 rounded-full text-white"
-                          style={{ background: ministryColors[post.ministry] ?? '#6B7280', fontSize: 10 }}>
-                          {post.ministry}
-                        </span>
-                      </div>
-                      <div className="text-xs text-gray-400 mt-0.5">{post.role} · {post.time}</div>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-gray-700 leading-relaxed mb-4">{post.content}</p>
-
-                  <div className="flex items-center gap-4 pt-3 border-t border-gray-100">
-                    <button
-                      onClick={() => toggleLike(post.id)}
-                      className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
-                      style={{ color: post.liked ? '#009A44' : '#9CA3AF' }}
-                    >
-                      <ThumbsUp size={14} fill={post.liked ? '#009A44' : 'none'} /> {post.likes}
-                    </button>
-                    <button className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors">
-                      <MessageSquare size={14} /> {post.comments} comentários
-                    </button>
-                    <div className="flex-1" />
-                    <Info size={14} className="text-gray-300" />
                   </div>
                 </div>
+
+                {/* Content */}
+                <p style={{ fontSize: 14, color: '#CCCCCC', lineHeight: 1.7, marginBottom: 16 }}>{post.content}</p>
+
+                {/* Actions */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, paddingTop: 14, borderTop: '1px solid #252525' }}>
+                  <button onClick={() => toggleLike(post.id)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: post.liked ? '#009A44' : '#555555', transition: 'color 0.15s' }}>
+                    <ThumbsUp size={14} /> {post.likes}
+                  </button>
+                  <button style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#555555' }}>
+                    <MessageSquare size={14} /> {post.comments}
+                  </button>
+                </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
-      </main>
+      </div>
     </div>
   )
 }
