@@ -162,16 +162,18 @@ export default function Home() {
                     <Icon size={130} strokeWidth={1.2} />
                   </div>
 
-                  {/* Label on the right */}
+                  {/* Label aligned to the right */}
                   <span style={{
-                    marginLeft: 88,
-                    paddingRight: 16,
+                    position: 'absolute',
+                    right: 16,
+                    bottom: 18,
                     fontSize: 14,
                     fontWeight: 700,
                     color: '#1A1A1A',
                     lineHeight: 1.35,
                     letterSpacing: '-0.1px',
-                    position: 'relative',
+                    textAlign: 'right',
+                    maxWidth: '55%',
                   }}>
                     {c.label}
                   </span>
