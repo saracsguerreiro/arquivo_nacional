@@ -122,7 +122,7 @@ export const govPosts = [
     priority: "urgente",
     ministry: "Economia",
     content: "Coloco à discussão do Executivo a proposta de revisão do Regime de Tributação das Empresas Mineiras. O documento completo está em anexo. Solicito comentários até sexta-feira.",
-    images: ["/arquivo_nacional/images/artigo-destaque.webp"],
+    images: ["/arquivo_nacional/images/maputo-cidade.jpg", "/arquivo_nacional/images/comunidade-mocambique.jpeg"],
     likes: 8,
     comments: 5,
     liked: false,
